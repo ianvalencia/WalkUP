@@ -16,7 +16,7 @@ export default class OnboardingLoadingScreen extends React.Component {
 
   // Fetch the token from storage then navigate to our appropriate place
   _bootstrapAsync = async () => {
-    //await AsyncStorage.removeItem('onboarded');
+    //await AsyncStorage.removeItem('userToken');
     const userToken = await AsyncStorage.getItem('userToken');
 
     // This will switch to the App screen or Auth screen and this loading

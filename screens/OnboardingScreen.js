@@ -145,9 +145,9 @@ export default class OnboardingScreen extends Component {
             <View style={{height: 40, width: 255, backgroundColor:'white', marginBottom:10, borderColor:'black',borderWidth: 1}}>
               <Picker
                 prompt="Step Goal"
-                selectedValue={this.state.initialstepGoal}
+                selectedValue={this.state.initialStepGoal}
                 style={{ height: 35, width: 250, backgroundColor:'white', marginBottom:10, borderColor:'black',borderRadius:5,borderWidth: 1}}
-                onValueChange={(itemValue, itemIndex) => this.setState({initialstepGoal: itemValue})}>
+                onValueChange={(itemValue, itemIndex) => this.setState({initialStepGoal: itemValue})}>
                 <Picker.Item label="-" value="" />
                 <Picker.Item label="3000 steps" value="3000" />
                 <Picker.Item label="4000 steps" value="4000" />

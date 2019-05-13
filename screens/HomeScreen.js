@@ -7,19 +7,90 @@ import {
   Text,
   TouchableOpacity,
   View,
+  AsyncStorage
 } from 'react-native';
 import { WebBrowser } from 'expo';
 
 import { MonoText } from '../components/StyledText';
+import Loader from '../components/Loader'
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
     header: null,
-  };
+  }
 
+  constructor(props) {
+    super(props)
+    this.state = {
+      loading: true,
+      userToken: {
+        name: '',
+        birthday: '',
+        sex: '',
+        initialStepGoal: 3000,
+      },
+      homescreenTimes: []
+    }
+  }
+
+  async componentDidMount() {
+    this.props.navigation.addListener('didFocus', this._onFocus);
+    this.props.navigation.addListener('didBlur', this._onBlur);
+    console.log('HomeScreen mounted')
+    await this._getData()
+  }
+
+  async componentWillUnmount() {
+    console.log('HomeScreen will unmount')
+  }
+
+  _onFocus = async () => {
+    console.log('HomeScreen focused')
+    await this._getData()
+    this._startTime = new Date()
+  }
+
+  _onBlur = async () => {
+    console.log('HomeScreen blurred')
+    console.log('HomeScreen time:'+JSON.stringify((new Date())-this._startTime))
+    const screentime = { date: new Date(), duration: (new Date())-this._startTime }
+    await this.state.homescreenTimes.push(screentime)
+    await this._saveData()
+  }
+
+  _getData = async () => {
+    this.setState({ loading: true })
+    try {
+      let userToken = await AsyncStorage.getItem('userToken')
+      if(userToken!=null) {
+        this.setState({ userToken: JSON.parse(userToken) })
+      }
+      let homescreenTimes = await AsyncStorage.getItem('homescreenTimes')
+      if(homescreenTimes!=null) {
+        this.setState({ homescreenTimes: JSON.parse(homescreenTimes) })
+      }
+      console.log(this.state.homescreenTimes)
+      
+    } catch(error) {
+      alert(error)
+    }
+    this.setState({ loading: false })
+  }
+
+  _saveData = async () => {
+    //this.setState({ loading: true })
+    try {
+      await AsyncStorage.setItem('homescreenTimes', JSON.stringify(this.state.homescreenTimes))
+      //console.log(JSON.stringify(new Date()))
+    } catch(error) {
+      alert(error)
+    }
+    //this.setState({ loading: false })
+  }
   render() {
     return (
       <View style={styles.container}>
+        <Loader loading={this.state.loading} />
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <View style={styles.welcomeContainer}>
             <Image
